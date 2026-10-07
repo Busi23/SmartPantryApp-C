@@ -49,14 +49,21 @@
             android:inputType="numberDecimal"
             android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/editUnit"
+        <Spinner
+            android:id="@+id/spinnerUnit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:hint="Unit, for example grams, litres or items"
-            android:inputType="text"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:entries="@array/ingredient_units" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/unit_help"
+            android:textColor="#616161"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/editExpiryDate"
