@@ -15,6 +15,8 @@ import android.widget.Button;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import android.view.View;
+import androidx.appcompat.app.AlertDialog;
 
 public class EditAddIngredient extends AppCompatActivity {
 
@@ -59,6 +61,36 @@ public class EditAddIngredient extends AppCompatActivity {
                     break;
                 }
             }
+            Button deleteButton = findViewById(R.id.buttonDeleteIngredient);
+
+            if (ingredientId != -1) {
+                deleteButton.setVisibility(View.VISIBLE);
+            }
+
+            deleteButton.setOnClickListener(e -> {
+
+                new AlertDialog.Builder(EditAddIngredient.this)
+                        .setTitle("Delete ingredient")
+                        .setMessage("Delete this ingredient?")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+
+                            int result = database.deleteIngredient(ingredientId);
+
+                            if (result > 0) {
+                                Toast.makeText(EditAddIngredient.this,
+                                        "Ingredient deleted",
+                                        Toast.LENGTH_SHORT).show();
+
+                                finish();
+                            } else {
+                                Toast.makeText(EditAddIngredient.this,
+                                        "Could not delete ingredient",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            });
 
             saveButton.setText("Update Ingredient");
         }

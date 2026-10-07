@@ -97,4 +97,10 @@ public class Database extends SQLiteOpenHelper {
         return db.update("ingredients", values,
                 "id = ?", new String[]{String.valueOf(id)});
     }
+    public int deleteIngredient(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        return db.delete("ingredients", "id = ?",
+                new String[]{String.valueOf(id)});
+    }
     }

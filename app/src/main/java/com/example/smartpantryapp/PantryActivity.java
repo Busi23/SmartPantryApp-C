@@ -11,6 +11,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 public class PantryActivity extends AppCompatActivity {
@@ -31,20 +33,22 @@ public class PantryActivity extends AppCompatActivity {
         pantryList.setEmptyView(findViewById(R.id.textEmptyPantry));
         pantryList.setOnItemClickListener((parent, view, position, id) -> {
 
-            Ingredients ingredient =
-                    (Ingredients) parent.getItemAtPosition(position);
 
-            Intent intent = new Intent(
-                    PantryActivity.this, EditAddIngredient.class);
+                    Ingredients ingredient =
+                            (Ingredients) parent.getItemAtPosition(position);
 
-            intent.putExtra("id", ingredient.id);
-            intent.putExtra("name", ingredient.name);
-            intent.putExtra("quantity", ingredient.quantity);
-            intent.putExtra("unit", ingredient.unit);
+                    Intent intent = new Intent(
+                            PantryActivity.this, EditAddIngredient.class);
+
+                    intent.putExtra("id", ingredient.id);
+                    intent.putExtra("name", ingredient.name);
+                    intent.putExtra("quantity", ingredient.quantity);
+                    intent.putExtra("unit", ingredient.unit);
             intent.putExtra("expiry", ingredient.expiryDate);
-
             startActivity(intent);
-        });
+                });
+
+
 
         Button addIngredientButton =
                 findViewById(R.id.buttonAddIngredient);
