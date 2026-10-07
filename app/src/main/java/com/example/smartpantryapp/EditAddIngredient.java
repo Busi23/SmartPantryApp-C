@@ -21,12 +21,14 @@ public class EditAddIngredient extends AppCompatActivity {
     EditText ingredientName, ingredientQuantity, ingredientExpiry;
     Spinner ingredientUnit;
     Database database;
+    int ingredientId = -1;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_edit_add_ingredient);
 
@@ -39,6 +41,27 @@ public class EditAddIngredient extends AppCompatActivity {
         Button saveButton = findViewById(R.id.buttonSaveIngredient);
         Button cancelButton = findViewById(R.id.buttonCancel);
         database = new Database(this);
+        ingredientId = getIntent().getIntExtra("id", -1);
+
+        if (ingredientId != -1) {
+            ingredientName.setText(getIntent().getStringExtra("name"));
+
+            ingredientQuantity.setText(
+                    String.valueOf(getIntent().getDoubleExtra("quantity", 0)));
+
+            ingredientExpiry.setText(getIntent().getStringExtra("expiry"));
+
+            String unit = getIntent().getStringExtra("unit");
+
+            for (int i = 0; i < ingredientUnit.getCount(); i++) {
+                if (ingredientUnit.getItemAtPosition(i).toString().equals(unit)) {
+                    ingredientUnit.setSelection(i);
+                    break;
+                }
+            }
+
+            saveButton.setText("Update Ingredient");
+        }
 
         saveButton.setOnClickListener(e -> {
             saveIngredient();
@@ -86,15 +109,24 @@ public class EditAddIngredient extends AppCompatActivity {
             return;
         }
 
-        long result = database.addIngredient(name, quantity, unit, expiry);
+        boolean saved;
 
-        if (result == -1) {
-            Toast.makeText(this, "Ingredient could not be saved",
-                    Toast.LENGTH_SHORT).show();
+        if (ingredientId == -1) {
+            long result = database.addIngredient(name, quantity, unit, expiry);
+            saved = result != -1;
         } else {
+            int result = database.updateIngredient(
+                    ingredientId, name, quantity, unit, expiry);
+            saved = result > 0;
+        }
+
+        if (saved) {
             Toast.makeText(this, "Ingredient saved",
                     Toast.LENGTH_SHORT).show();
             finish();
+        } else {
+            Toast.makeText(this, "Ingredient could not be saved",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

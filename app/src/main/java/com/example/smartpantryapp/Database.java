@@ -3,7 +3,9 @@ package com.example.smartpantryapp;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.content.ContentValues;
+import android.content.ContentValues;import android.database.Cursor;
+import java.util.ArrayList;
+
 
 public class Database extends SQLiteOpenHelper {
 
@@ -47,6 +49,52 @@ public class Database extends SQLiteOpenHelper {
             values.put("expiry_date", expiryDate);
         }
 
-        return db.insert("ingredients", null, values);
+        return db.insert("ingredients", null, values);}
+        public ArrayList<Ingredients> getIngredients() {
+            ArrayList<Ingredients> ingredients = new ArrayList<>();
+
+            SQLiteDatabase db = getReadableDatabase();
+
+            Cursor cursor = db.rawQuery(
+                    "SELECT id, name, quantity, unit, expiry_date " +
+                            "FROM ingredients ORDER BY name", null);
+
+            try {
+                while (cursor.moveToNext()) {
+                    int id = cursor.getInt(0);
+                    String name = cursor.getString(1);
+                    double quantity = cursor.getDouble(2);
+                    String unit = cursor.getString(3);
+                    String expiryDate = cursor.getString(4);
+
+                    Ingredients ingredient = new Ingredients(
+                            id, name, quantity, unit, expiryDate);
+
+                    ingredients.add(ingredient);
+                }
+            } finally {
+                cursor.close();
+            }
+
+            return ingredients;
+        }
+    public int updateIngredient(int id, String name, double quantity,
+                                String unit, String expiryDate) {
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("quantity", quantity);
+        values.put("unit", unit);
+
+        if (expiryDate == null || expiryDate.trim().isEmpty()) {
+            values.putNull("expiry_date");
+        } else {
+            values.put("expiry_date", expiryDate);
+        }
+
+        return db.update("ingredients", values,
+                "id = ?", new String[]{String.valueOf(id)});
     }
-}
+    }
