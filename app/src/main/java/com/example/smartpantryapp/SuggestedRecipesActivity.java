@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.widget.Button;
 
 import java.util.ArrayList;
+import android.content.Intent;
 
 public class SuggestedRecipesActivity extends AppCompatActivity {
 
@@ -28,6 +29,19 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
 
         recipeList = findViewById(R.id.listRecipes);
         recipeList.setEmptyView(findViewById(R.id.textNoRecipes));
+        recipeList.setOnItemClickListener((parent, view, position, id) -> {
+
+            Recipe recipe = (Recipe) parent.getItemAtPosition(position);
+
+            Intent intent = new Intent(
+                    SuggestedRecipesActivity.this, RecipeDetailActivity.class);
+
+            intent.putExtra("id", recipe.id);
+            intent.putExtra("name", recipe.name);
+            intent.putExtra("steps", recipe.steps);
+
+            startActivity(intent);
+        });
         Button backButton = findViewById(R.id.buttonBackToPantry);
 
         backButton.setOnClickListener(e -> {

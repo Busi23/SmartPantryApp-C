@@ -66,6 +66,14 @@ public class PantryActivity extends AppCompatActivity {
 
             startActivity(intent);
         });
+        Button settingsButton = findViewById(R.id.buttonSettings);
+
+        settingsButton.setOnClickListener(e -> {
+            Intent intent = new Intent(
+                    PantryActivity.this, SettingsActivity.class);
+
+            startActivity(intent);
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main), (v, insets) -> {

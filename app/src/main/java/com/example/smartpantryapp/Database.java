@@ -282,4 +282,29 @@ public class Database extends SQLiteOpenHelper {
 
         return suggestions;
     }
+    public String getRecipeIngredients(int recipeId) {
+
+        String ingredients = "";
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT name, quantity, unit FROM recipe_ingredients " +
+                        "WHERE recipe_id = ? ORDER BY id",
+                new String[]{String.valueOf(recipeId)});
+
+        try {
+            while (cursor.moveToNext()) {
+                String name = cursor.getString(0);
+                double quantity = cursor.getDouble(1);
+                String unit = cursor.getString(2);
+
+                ingredients = ingredients + name + " — "
+                        + quantity + " " + unit + "\n";
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return ingredients;
+    }
     }
