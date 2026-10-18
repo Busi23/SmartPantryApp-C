@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import androidx.appcompat.widget.Toolbar;
 
 public class PantryActivity extends AppCompatActivity {
 
@@ -25,6 +26,29 @@ public class PantryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_pantry);
+        Toolbar toolbar = findViewById(R.id.pantryToolbar);
+        toolbar.inflateMenu(R.menu.pantry_menu);
+
+        toolbar.setOnMenuItemClickListener(item -> {
+
+            if (item.getItemId() == R.id.menuRecipes) {
+                Intent intent = new Intent(
+                        PantryActivity.this, SuggestedRecipesActivity.class);
+
+                startActivity(intent);
+                return true;
+            }
+
+            if (item.getItemId() == R.id.menuSettings) {
+                Intent intent = new Intent(
+                        PantryActivity.this, SettingsActivity.class);
+
+                startActivity(intent);
+                return true;
+            }
+
+            return false;
+        });
 
         database = new Database(this);
 
