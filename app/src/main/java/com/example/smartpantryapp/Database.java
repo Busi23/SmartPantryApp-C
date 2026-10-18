@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "smartpantry.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,16 +28,19 @@ public class Database extends SQLiteOpenHelper {
 
         db.execSQL(sql);
         createRecipeTables(db);
+        addMoreRecipes(db);
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Database migration steps will go here when needed.
 
             if (oldVersion < 2) {
                 createRecipeTables(db);
             }
+            if (oldVersion < 3) {
+            addMoreRecipes(db);
+        }
         }
 
     public long addIngredient(String name, double quantity,
@@ -144,6 +147,111 @@ public class Database extends SQLiteOpenHelper {
         addRecipeIngredient(db, recipeId, "egg", 2, "items");
         addRecipeIngredient(db, recipeId, "butter", 10, "g");
     }
+
+    private void addMoreRecipes(SQLiteDatabase db) {
+
+        addRecipe(db, "Boiled Eggs",
+                "1. Place eggs in water.\n2. Boil until cooked.\n3. Cool and peel.",
+                new String[]{"egg"},
+                new double[]{2},
+                new String[]{"items"});
+
+        addRecipe(db, "Cheese Omelette",
+                "1. Beat eggs.\n2. Cook in a pan.\n3. Add cheese and fold.",
+                new String[]{"egg", "cheese"},
+                new double[]{2, 30},
+                new String[]{"items", "g"});
+
+        addRecipe(db, "French Toast",
+                "1. Beat the egg.\n2. Dip bread in the egg.\n3. Fry both sides.",
+                new String[]{"egg", "bread"},
+                new double[]{1, 2},
+                new String[]{"items", "slices"});
+
+        addRecipe(db, "Pancakes",
+                "1. Mix flour, egg and milk.\n2. Make a smooth batter.\n3. Fry small portions.",
+                new String[]{"flour", "egg", "milk"},
+                new double[]{100, 1, 150},
+                new String[]{"g", "items", "ml"});
+
+        addRecipe(db, "Tomato Pasta",
+                "1. Cook pasta.\n2. Cook chopped tomatoes.\n3. Mix together.",
+                new String[]{"pasta", "tomato"},
+                new double[]{100, 2},
+                new String[]{"g", "items"});
+
+        addRecipe(db, "Cheese Sandwich",
+                "1. Place cheese between bread slices.\n2. Toast until golden.",
+                new String[]{"bread", "cheese"},
+                new double[]{2, 30},
+                new String[]{"slices", "g"});
+
+        addRecipe(db, "Tomato Sandwich",
+                "1. Slice the tomato.\n2. Place it on the bread.\n3. Serve.",
+                new String[]{"bread", "tomato"},
+                new double[]{2, 1},
+                new String[]{"slices", "items"});
+
+        addRecipe(db, "Mashed Potatoes",
+                "1. Peel and boil potatoes until soft.\n2. Mash thoroughly.\n3. Add butter and mix.",
+                new String[]{"potato", "butter"},
+                new double[]{3, 15},
+                new String[]{"items", "g"});
+
+        addRecipe(db, "Fried Potatoes",
+                "1. Slice potatoes.\n2. Heat oil in a pan.\n3. Fry until golden and cooked.",
+                new String[]{"potato", "oil"},
+                new double[]{2, 15},
+                new String[]{"items", "ml"});
+
+        addRecipe(db, "Tomato Omelette",
+                "1. Beat the eggs.\n2. Add chopped tomato.\n3. Cook in a pan until set.",
+                new String[]{"egg", "tomato"},
+                new double[]{2, 1},
+                new String[]{"items", "items"});
+
+        addRecipe(db, "Garlic Butter Pasta",
+                "1. Cook pasta.\n2. Melt butter and add garlic.\n3. Mix with pasta.",
+                new String[]{"pasta", "butter", "garlic"},
+                new double[]{100, 15, 1},
+                new String[]{"g", "g", "cloves"});
+
+        addRecipe(db, "Banana Pancakes",
+                "1. Mash the banana.\n2. Mix with egg and flour.\n3. Cook small pancakes in a pan.",
+                new String[]{"banana", "egg", "flour"},
+                new double[]{1, 1, 50},
+                new String[]{"items", "items", "g"});
+
+        addRecipe(db, "Potato and Egg Hash",
+                "1. Dice the potatoes.\n2. Fry until tender.\n3. Add egg and cook thoroughly.",
+                new String[]{"potato", "egg", "oil"},
+                new double[]{2, 2, 10},
+                new String[]{"items", "items", "ml"});
+
+        addRecipe(db, "Cheesy Tomato Pasta",
+                "1. Cook pasta.\n2. Prepare a tomato sauce.\n3. Add cheese and stir.",
+                new String[]{"pasta", "tomato", "cheese"},
+                new double[]{100, 2, 30},
+                new String[]{"g", "items", "g"});
+    }
+
+    private void addRecipe(SQLiteDatabase db, String name,
+                           String steps, String[] names,
+                           double[] quantities, String[] units) {
+
+        ContentValues recipe = new ContentValues();
+        recipe.put("name", name);
+        recipe.put("steps", steps);
+
+        long recipeId = db.insertOrThrow("recipes", null, recipe);
+
+        for (int i = 0; i < names.length; i++) {
+            addRecipeIngredient(db, recipeId,
+                    names[i], quantities[i], units[i]);
+        }
+    }
+
+
 
     private void addRecipeIngredient(SQLiteDatabase db, long recipeId,
                                      String name, double quantity, String unit) {
